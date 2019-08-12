@@ -16,6 +16,7 @@ import com.omelchenkoaleks.employees.pojo.EmployeeResponse;
 import java.util.ArrayList;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private EmployeeAdapter mEmployeeAdapter;
 
     private Disposable mDisposable;
+    private CompositeDisposable mCompositeDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
           */
         ApiFactory apiFactory = ApiFactory.getInstance();
         ApiService apiService = apiFactory.getApiService();
+        mCompositeDisposable = new CompositeDisposable();
 
         // ВОТ ТАК:
 
@@ -76,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Ошибка получения данных!", Toast.LENGTH_SHORT).show();
                     }
                 });
+         // после создания объект Disposable мы добавляем его в объект CompositeDisposable
+        mCompositeDisposable.add(mDisposable);
 
         /*
             ЗАМЕТКА КАК ПОЛУЧИТЬ ИНФОРМАЦИЮ ОБ ОШИБКЕ В ТОСТ:
@@ -99,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (mDisposable != null) {
-            mDisposable.dispose();
+        if (mCompositeDisposable != null) {
+            mCompositeDisposable.dispose();
         }
         super.onDestroy();
     }
