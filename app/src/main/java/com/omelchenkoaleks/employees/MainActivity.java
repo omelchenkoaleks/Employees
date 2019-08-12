@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerView = findViewById(R.id.employees_recycler_view);
         mEmployeeAdapter = new EmployeeAdapter();
+        // в адаптер нужно добавить вначале пустой список или будет ошибка null
         mEmployeeAdapter.setEmployees(new ArrayList<Employee>());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mEmployeeAdapter);
@@ -67,6 +68,12 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Ошибка получения данных!", Toast.LENGTH_SHORT).show();
                     }
                 });
+
+        /*
+            ЗАМЕТКА КАК ПОЛУЧИТЬ ИНФОРМАЦИЮ ОБ ОШИБКЕ В ТОСТ:
+                вместо text: "Ошибка получения данных!" можно написать
+                throwable.getMessage() = и прочитать в тосте ошибку )
+         */
 
 
         /* ------- Тест, чтобы проверить что работает: ------- */
