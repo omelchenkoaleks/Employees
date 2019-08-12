@@ -49,4 +49,9 @@ public class ApiFactory {
         }
         return sApiFactory;
     }
+
+    // метод, который возвращает нам ApiService
+    public ApiService getApiService() {
+        return sRetrofit.create(ApiService.class);
+    }
 }
