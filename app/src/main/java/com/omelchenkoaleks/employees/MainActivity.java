@@ -16,12 +16,15 @@ import com.omelchenkoaleks.employees.pojo.EmployeeResponse;
 import java.util.ArrayList;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private EmployeeAdapter mEmployeeAdapter;
+
+    private Disposable mDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +56,13 @@ public class MainActivity extends AppCompatActivity {
                     используем метод subscribe с двумя параметрами, передаем два объекта
                     анонимного класса Consumer (первый выполняется в случае, если данные загружены
                     успешно, второй принимает исключение)
+
+
+            важное дополнение:
+                Disposable = нужный объект, чтобы избежать утечки памяти
+
          */
-        apiService.getEmployees()
+         mDisposable = apiService.getEmployees()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<EmployeeResponse>() {
@@ -87,5 +95,13 @@ public class MainActivity extends AppCompatActivity {
 //        employees.add(employee1);
 //        employees.add(employee2);
 //        mEmployeeAdapter.setEmployees(employees);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mDisposable != null) {
+            mDisposable.dispose();
+        }
+        super.onDestroy();
     }
 }
